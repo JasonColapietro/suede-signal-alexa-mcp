@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suede Signal for Alexa+</title>
+<meta name="description" content="An Alexa+ MCP server that grades how visible your website is to AI assistants and tells you the three fixes that move the score.">
+<style>
+  :root { --bg:#f7f6f3; --fg:#17171a; --muted:#5d5d66; --line:#dcdad4; --accent:#1f5eff; --code:#ecebe6; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#111114; --fg:#ededf0; --muted:#a2a2ad; --line:#2b2b31; --accent:#7ea2ff; --code:#1c1c21; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:17px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width:44rem; margin:0 auto; padding:4rem 1rem 5rem; }
+  h1 { font-size:clamp(2rem, 6vw, 2.8rem); line-height:1.1; margin:0 0 1rem; letter-spacing:-0.02em; }
+  h2 { font-size:1.15rem; margin:2.5rem 0 0.75rem; }
+  p.lead { font-size:1.2rem; color:var(--muted); margin:0 0 2rem; }
+  .say { border-left:3px solid var(--accent); padding:0.25rem 0 0.25rem 1rem; margin:0 0 1rem; }
+  .say b { display:block; font-size:0.8rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); }
+  table { width:100%; border-collapse:collapse; font-size:0.95rem; }
+  th, td { text-align:left; padding:0.6rem 0.5rem 0.6rem 0; border-bottom:1px solid var(--line); vertical-align:top; }
+  code { background:var(--code); padding:0.1rem 0.35rem; border-radius:4px; font-size:0.9em; word-break:break-all; }
+  a { color:var(--accent); }
+  footer { margin-top:3rem; color:var(--muted); font-size:0.9rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Ask Alexa how visible your website is to AI.</h1>
+  <p class="lead">Suede Signal for Alexa+ grades any site the way AI assistants read it, then tells you the three fixes that move the score.</p>
+
+  <div class="say"><b>You</b>"Alexa, how does example.com show up in AI answers?"</div>
+  <div class="say"><b>Alexa+</b>"example.com gets an F for AI visibility, 17 out of 100. Citability needs the most work. Top fixes: add an llms.txt file, use exactly one H1 that states the page's answer, and break content into H2 sections."</div>
+
+  <h2>Three tools</h2>
+  <table>
+    <tr><th>Ask</th><th>Get</th></tr>
+    <tr><td>"How visible is my site to AI?"</td><td>Grade, score out of 100, weakest area, top three fixes</td></tr>
+    <tr><td>"How do I compare with competitor.com?"</td><td>Who leads, by how much, and the gap to close first</td></tr>
+    <tr><td>"Tell me more about my structured data."</td><td>That area's score, checks passed, and what to fix</td></tr>
+  </table>
+
+  <h2>Connect</h2>
+  <p>MCP endpoint, Streamable HTTP, protocol 2025-11-25: <code id="endpoint">/mcp</code></p>
+  <p>Powered by <a href="https://signal.suedeai.ai">Suede Signal</a>: Up to 23 deterministic checks across AI crawler access, citability, metadata, structured data and trust.</p>
+
+  <footer>Built by <a href="https://seo.suedeai.ai">Suede AI</a> for Build, Ship, Shape. Open source under the MIT license.</footer>
+</main>
+<script>document.getElementById("endpoint").textContent = location.origin + "/mcp";</script>
+</body>
+</html>
