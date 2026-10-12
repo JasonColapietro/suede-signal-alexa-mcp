@@ -2,7 +2,7 @@
 // a fresh server and transport, so it runs unchanged on serverless functions.
 
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
-import { createServer } from "./server.js";
+import { createServer } from "./tools.js";
 import type { AuditFn } from "./signal.js";
 
 // The spec requires servers to validate Origin to block DNS rebinding. Voice

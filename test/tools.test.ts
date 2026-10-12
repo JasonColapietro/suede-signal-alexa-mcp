@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
-import { createServer } from "../src/server.js";
+import { createServer } from "../src/tools.js";
 import { AuditError, createSignalClient, type AuditFn } from "../src/signal.js";
 import { strongReport, weakReport } from "./fixtures.js";
 
