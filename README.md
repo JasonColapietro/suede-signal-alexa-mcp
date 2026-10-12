@@ -38,7 +38,7 @@ Alexa+ ──Streamable HTTP (MCP 2025-11-25)──▶ /mcp  (Vercel function, s
 
 ## Connect
 
-Endpoint: `https://<deployment>/mcp` (Streamable HTTP, no auth required).
+Endpoint: **`https://suede-signal-alexa-mcp.vercel.app/mcp`** (Streamable HTTP, no auth required). Landing page: https://suede-signal-alexa-mcp.vercel.app
 
 Try it with the MCP Inspector:
 
