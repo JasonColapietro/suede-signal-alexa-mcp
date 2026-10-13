@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suede Signal for Alexa+ · demo</title>
+<meta name="robots" content="noindex">
+<style>
+  :root {
+    --bg: #0f1013; --panel: #17181d; --line: #2a2c33; --fg: #eeeef1; --muted: #9a9ca6;
+    --listen: #4f8cff; --speak: #3fd18a; --think: #f5b14c; --code: #1d1f25;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font: 18px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .stage { height: 100vh; display: grid; grid-template-rows: auto 1fr auto; padding: 28px 40px; gap: 18px; }
+  header { display: flex; justify-content: space-between; align-items: center; }
+  header h1 { margin: 0; font-size: 22px; letter-spacing: 0; }
+  .badge { font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; }
+  main { display: grid; grid-template-columns: 300px 1fr; gap: 40px; min-height: 0; }
+  .device { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; }
+  .ring { width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle at 50% 45%, #22242b 0, #121318 70%); border: 10px solid #23252c; transition: border-color 260ms ease-out, box-shadow 260ms ease-out; }
+  .ring.listening { border-color: var(--listen); box-shadow: 0 0 60px -6px var(--listen); }
+  .ring.thinking { border-color: var(--think); box-shadow: 0 0 50px -10px var(--think); animation: pulse 1s ease-in-out infinite; }
+  .ring.speaking { border-color: var(--speak); box-shadow: 0 0 60px -6px var(--speak); }
+  @keyframes pulse { 50% { box-shadow: 0 0 20px -10px var(--think); } }
+  .state { font: 14px ui-monospace, Menlo, monospace; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; height: 20px; }
+  .transcript { display: flex; flex-direction: column; gap: 16px; justify-content: center; min-height: 0; overflow: hidden; }
+  .bubble { border-radius: 16px; padding: 16px 20px; max-width: 92%; animation: rise 280ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .bubble small { display: block; font: 12px ui-monospace, Menlo, monospace; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+  .you { align-self: flex-end; background: #1e2b48; }
+  .alexa { align-self: flex-start; background: #15291f; font-size: 19px; }
+  .call { align-self: stretch; background: var(--code); border: 1px solid var(--line); font: 14px/1.5 ui-monospace, Menlo, monospace; color: #c9cbd3; }
+  .call .ok { color: var(--speak); }
+  .call .name { color: #9fc1ff; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  footer { display: flex; justify-content: space-between; font: 13px ui-monospace, Menlo, monospace; color: var(--muted); }
+  .overlay { position: fixed; inset: 0; background: var(--bg); display: none; flex-direction: column; justify-content: center; padding: 0 120px; gap: 22px; animation: rise 300ms ease-out both; }
+  .overlay.on { display: flex; }
+  .overlay h2 { margin: 0; font-size: 56px; line-height: 1.08; letter-spacing: 0; max-width: 18ch; }
+  .overlay p { margin: 0; font-size: 24px; color: var(--muted); max-width: 46ch; }
+  .overlay .accent { color: var(--speak); }
+  .arch { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 12px; }
+  .arch div { border: 1px solid var(--line); background: var(--panel); border-radius: 14px; padding: 18px; font-size: 17px; }
+  .arch b { display: block; font-size: 19px; margin-bottom: 6px; }
+  .mono { font-family: ui-monospace, Menlo, monospace; font-size: 20px; color: var(--fg); }
+</style>
+</head>
+<body>
+<div class="stage">
+  <header>
+    <h1>Suede Signal for Alexa+</h1>
+    <span class="badge">Simulated Alexa+ conversation · real MCP tool calls to the live server</span>
+  </header>
+  <main>
+    <div class="device">
+      <div class="ring" id="ring"></div>
+      <div class="state" id="state">ready</div>
+    </div>
+    <div class="transcript" id="transcript"></div>
+  </main>
+  <footer>
+    <span id="endpoint"></span>
+    <span>MCP Streamable HTTP · protocol 2025-11-25</span>
+  </footer>
+</div>
+
+<section class="overlay" id="title">
+  <h2>Ask Alexa how visible your website is to <span class="accent">AI</span>.</h2>
+  <p>Suede Signal for Alexa+ grades any site the way AI assistants read it, then names the three fixes that move the score.</p>
+</section>
+
+<section class="overlay" id="how">
+  <h2>How it works</h2>
+  <div class="arch">
+    <div><b>Alexa+</b>Connects to a self-hosted MCP server over Streamable HTTP and calls one of three read-only tools.</div>
+    <div><b>Suede Signal MCP</b>Stateless serverless function. Turns each audit into a short reply written to be spoken.</div>
+    <div><b>Suede Signal audit</b>Up to 23 deterministic checks per page, with no model calls. Instant and free to run.</div>
+  </div>
+  <p>Every tool also returns structured data, so a screen device can show the grade and fixes.</p>
+</section>
+
+<section class="overlay" id="outro">
+  <h2>Connect it to Alexa+ today.</h2>
+  <p class="mono" id="outro-endpoint"></p>
+  <p class="mono">github.com/JasonColapietro/suede-signal-alexa-mcp</p>
+  <p>Built by Suede AI. Open source under the MIT license.</p>
+</section>
+
+<script>
+  const endpoint = `${location.origin}/mcp`;
+  document.getElementById("endpoint").textContent = endpoint;
+  document.getElementById("outro-endpoint").textContent = endpoint;
+  const ring = document.getElementById("ring");
+  const stateEl = document.getElementById("state");
+  const transcript = document.getElementById("transcript");
+
+  function setState(s) {
+    ring.className = `ring ${s === "ready" ? "" : s}`;
+    stateEl.textContent = s;
+  }
+
+  function overlay(id) {
+    for (const el of document.querySelectorAll(".overlay")) el.classList.toggle("on", el.id === id);
+  }
+
+  function bubble(kind, label, html) {
+    const el = document.createElement("div");
+    el.className = `bubble ${kind}`;
+    el.innerHTML = `<small>${label}</small>${html}`;
+    transcript.appendChild(el);
+    return el;
+  }
+
+  const esc = (s) => s.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+
+  async function callTool(name, args) {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: { "content-type": "application/json", accept: "application/json, text/event-stream" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: Date.now(), method: "tools/call", params: { name, arguments: args } }),
+    });
+    const body = await res.json();
+    if (body.error) throw new Error(body.error.message);
+    return body.result;
+  }
+
+  // The recorder (scripts/record-demo.mjs) drives these steps and times them to the narration.
+  window.demo = {
+    title: () => overlay("title"),
+    how: () => overlay("how"),
+    outro: () => overlay("outro"),
+    listen: (utterance) => { overlay(null); transcript.innerHTML = ""; setState("listening"); bubble("you", "You say", esc(utterance)); },
+    async call(name, args) {
+      setState("thinking");
+      const started = performance.now();
+      const card = bubble("call", "Alexa+ calls the MCP tool", `<span class="name">${name}</span> ${esc(JSON.stringify(args))}<br><span class="latency">…</span>`);
+      const result = await callTool(name, args);
+      const ms = Math.round(performance.now() - started);
+      card.querySelector(".latency").innerHTML = `<span class="ok">${result.isError ? "error" : "200 OK"}</span> in ${ms} ms`;
+      return result.content[0].text;
+    },
+    speak(text) { setState("speaking"); bubble("alexa", "Alexa+ replies", esc(text)); },
+    idle: () => setState("ready"),
+  };
+</script>
+</body>
+</html>
