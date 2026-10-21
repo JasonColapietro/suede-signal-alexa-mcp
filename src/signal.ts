@@ -1,6 +1,6 @@
 // Client for the Suede Signal audit API (https://signal.suedeai.ai).
-// Signal runs deterministic checks with no LLM calls, so every audit is free
-// and repeatable. This server never fetches the audited site itself: Signal
+// Signal runs deterministic page-readiness checks with no LLM calls. Public
+// page content and service availability can change between audits. This server never fetches the audited site itself: Signal
 // owns the fetch, including its SSRF guard against private and reserved hosts.
 
 export type CheckResult = {

@@ -1,4 +1,4 @@
-// The MCP server: three read-only tools that answer "how visible is my site to
+// The MCP server: three read-only tools that answer "how ready is my site for
 // AI?" by voice. Every tool calls Suede Signal; none writes, spends, or stores.
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -10,12 +10,12 @@ import { LANE_IDS, compareReports, describeLane, shortFix, summarizeReport } fro
 export const SERVER_INFO = { name: "suede-signal-alexa", title: "Suede Signal", version: "1.0.0" };
 
 const INSTRUCTIONS =
-  "Suede Signal grades how visible a website is to AI assistants such as ChatGPT, Claude, Perplexity and Gemini, " +
+  "Suede Signal grades deterministic website readiness checks, not measured citations or rankings in AI answers, " +
   "on an A to F scale out of 100, across five areas: AI crawler access, metadata, structured data, citability and trust. " +
-  "Use check_ai_visibility when someone asks how their site shows up in AI answers. " +
+  "Use check_ai_visibility when someone asks about website AI readiness. " +
   "Use compare_ai_visibility when they name a competitor. " +
   "Use explain_ai_visibility_area when they ask for more detail on one area. " +
-  "Each tool returns a short reply written to be spoken; read it naturally and offer the next step.";
+  "Each tool returns text written to be spoken. Only check and comparison return structured results. Do not imply a native Alexa+ connection, autonomous remediation, or conversation memory.";
 
 const url = z
   .string()
@@ -58,13 +58,13 @@ export function createServer(audit: AuditFn = createSignalClient()): McpServer {
   server.registerTool(
     "check_ai_visibility",
     {
-      title: "Check AI visibility",
+      title: "Check AI readiness",
       description:
-        "Grade how visible a website is to AI assistants and answer engines. Returns an A to F grade, a score out of 100, " +
+        "Grade a website against deterministic AI readiness checks. This does not measure actual citations or rankings. Returns an A to F grade, a score out of 100, " +
         "the strongest and weakest areas, and the top fixes, phrased to be read aloud.",
       inputSchema: { url },
       outputSchema: reportShape,
-      annotations: { title: "Check AI visibility", ...READ_ONLY },
+      annotations: { title: "Check AI readiness", ...READ_ONLY },
     },
     async ({ url }) => {
       try {
@@ -79,16 +79,16 @@ export function createServer(audit: AuditFn = createSignalClient()): McpServer {
   server.registerTool(
     "compare_ai_visibility",
     {
-      title: "Compare AI visibility with a competitor",
+      title: "Compare AI readiness with a competitor",
       description:
-        "Grade two websites side by side for AI visibility: who leads, by how much, and the area where the first site " +
+        "Grade two websites side by side for AI readiness: who leads, by how much, and the area where the first site " +
         "trails the competitor most, with the first fix for it.",
       inputSchema: {
         url: url.describe("The user's own website."),
         competitorUrl: url.describe("The competitor's website."),
       },
       outputSchema: { mine: z.object(reportShape), competitor: z.object(reportShape) },
-      annotations: { title: "Compare AI visibility", ...READ_ONLY },
+      annotations: { title: "Compare AI readiness", ...READ_ONLY },
     },
     async ({ url, competitorUrl }) => {
       try {
@@ -106,17 +106,17 @@ export function createServer(audit: AuditFn = createSignalClient()): McpServer {
   server.registerTool(
     "explain_ai_visibility_area",
     {
-      title: "Explain one AI visibility area",
+      title: "Explain one AI readiness area",
       description:
         "Go deeper on one of the five areas for a website: its score, how many checks passed, and what to fix. " +
         "Areas: crawler-access (can AI crawlers reach the site, llms.txt), metadata (title, description, sharing tags), " +
-        "schema (structured data that tells AI who you are), citability (headings and passages AI can quote), " +
+        "schema (structured data that describes the page and organization), citability (headings and passages AI can quote), " +
         "trust (about, contact and other credibility signals).",
       inputSchema: {
         url,
         area: z.enum(LANE_IDS).describe("Which area to explain."),
       },
-      annotations: { title: "Explain an AI visibility area", ...READ_ONLY },
+      annotations: { title: "Explain an AI readiness area", ...READ_ONLY },
     },
     async ({ url, area }) => {
       try {

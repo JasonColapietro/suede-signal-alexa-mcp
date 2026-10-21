@@ -25,7 +25,7 @@ test("spokenHost drops scheme, www and path", () => {
 
 test("summary leads with grade and caps fixes at three", () => {
   const text = summarizeReport(weakReport);
-  assert.match(text, /^example\.com gets an F for AI visibility, 17 out of 100\./);
+  assert.match(text, /^example\.com gets an F for AI readiness, 17 out of 100\./);
   assert.match(text, /strongest area is AI crawler access; citability needs the most work/);
   assert.match(text, /Top 3 fixes: Add \/llms\.txt; Use exactly one H1 .*; and Break content into H2 sections\.$/);
   assert.doesNotMatch(text, /Thin pages/);
@@ -36,12 +36,12 @@ test("summary handles a single fix and a clean sweep", () => {
   assert.match(summarizeReport(strongReport), /gets an A .* Top fix: Convert key points to bullet lists\.$/);
   const perfect = summarizeReport(perfectReport);
   assert.match(perfect, /Every area scores 100\./);
-  assert.match(perfect, /Every check passed/);
+  assert.match(perfect, /Every check in this audit passed/);
 });
 
 test("comparison names the leader and the costliest gap", () => {
   const text = compareReports(weakReport, strongReport);
-  assert.match(text, /^seo\.suedeai\.ai leads, 97 to 17 for AI visibility\./);
+  assert.match(text, /^seo\.suedeai\.ai leads, 97 to 17 for AI readiness\./);
   assert.match(text, /example\.com trails most on citability, 0 versus 88\./);
   assert.match(text, /The first fix there: Use exactly one H1/);
 });
@@ -54,7 +54,7 @@ test("comparison when ahead everywhere", () => {
 test("lane detail lists failed checks", () => {
   const text = describeLane(weakReport, "citability");
   assert.match(text, /scores 0 out of 100 on citability\. 1 of 5 checks passed\./);
-  assert.match(text, /To fix: Use exactly one H1 .*; Break content into H2 sections; and Thin pages don't get cited\.$/);
+  assert.match(text, /To fix: Use exactly one H1 .*; Break content into H2 sections; and Add substantive page content\.$/);
   assert.match(describeLane(strongReport, "trust"), /Every check in that area passed\./);
 });
 

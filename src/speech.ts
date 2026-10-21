@@ -1,5 +1,5 @@
-// Turns Signal reports into short replies that read well aloud. Alexa+ phrases
-// the final answer itself, so these stay plain: no markdown, no URLs, no
+// Turns Signal reports into short replies that read well aloud. MCP clients
+// choose how to present them, so these stay plain: no markdown, no URLs, no
 // HTML entities, and at most three fixes per reply.
 
 import type { AuditReport, Lane } from "./signal.js";
@@ -32,7 +32,7 @@ export function spokenHost(url: string): string {
 // The action alone is what a listener can act on.
 export function shortFix(fix: string): string {
   const action = fix.split(/(?<=\.)\s|:\s|,\s(?=the\b)/)[0].replace(/\.$/, "");
-  return plain(action);
+  return /^Thin pages don.t get cited$/i.test(action) ? "Add substantive page content" : plain(action);
 }
 
 function laneName(lane: Lane): string {
@@ -55,7 +55,7 @@ function joinSpoken(items: string[]): string {
 
 export function summarizeReport(report: AuditReport): string {
   const host = spokenHost(report.finalUrl || report.url);
-  const parts = [`${host} gets ${article(report.grade)} ${report.grade} for AI visibility, ${report.score} out of 100.`];
+  const parts = [`${host} gets ${article(report.grade)} ${report.grade} for AI readiness, ${report.score} out of 100.`];
 
   if (report.lanes.length > 0) {
     const { strongest, weakest } = strongestAndWeakest(report);
@@ -68,7 +68,7 @@ export function summarizeReport(report: AuditReport): string {
 
   const fixes = report.topFixes.slice(0, MAX_SPOKEN_FIXES).map(shortFix);
   if (fixes.length === 0) {
-    parts.push("Every check passed, so there is nothing to fix right now.");
+    parts.push("Every check in this audit passed. This does not measure actual citations or rankings.");
   } else {
     parts.push(`Top ${fixes.length === 1 ? "fix" : `${fixes.length} fixes`}: ${joinSpoken(fixes)}.`);
   }
@@ -82,8 +82,8 @@ export function compareReports(mine: AuditReport, theirs: AuditReport): string {
 
   const lead =
     gap === 0
-      ? `${myHost} and ${theirHost} are tied at ${mine.score} out of 100 for AI visibility.`
-      : `${gap > 0 ? myHost : theirHost} leads, ${Math.max(mine.score, theirs.score)} to ${Math.min(mine.score, theirs.score)} for AI visibility.`;
+      ? `${myHost} and ${theirHost} are tied at ${mine.score} out of 100 for AI readiness.`
+      : `${gap > 0 ? myHost : theirHost} leads, ${Math.max(mine.score, theirs.score)} to ${Math.min(mine.score, theirs.score)} for AI readiness.`;
 
   const behind = mine.lanes
     .map((lane) => ({ lane, rival: theirs.lanes.find((l) => l.id === lane.id) }))
