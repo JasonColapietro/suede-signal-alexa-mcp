@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Suede Signal for Alexa+</title>
-<meta name="description" content="An Alexa+ MCP server that grades how visible your website is to AI assistants and tells you the three fixes that move the score.">
+<meta name="description" content="A working MCP demo for the Alexa+ track: deterministic website AI readiness checks, comparisons, and concise explanations.">
 <style>
   :root { --bg:#f7f6f3; --fg:#17171a; --muted:#5d5d66; --line:#dcdad4; --accent:#1f5eff; --code:#ecebe6; }
   @media (prefers-color-scheme: dark) { :root { --bg:#111114; --fg:#ededf0; --muted:#a2a2ad; --line:#2b2b31; --accent:#7ea2ff; --code:#1c1c21; } }
@@ -25,25 +25,23 @@
 </head>
 <body>
 <main>
-  <h1>Ask Alexa how visible your website is to AI.</h1>
-  <p class="lead">Suede Signal for Alexa+ grades any site the way AI assistants read it, then tells you the three fixes that move the score.</p>
-
-  <div class="say"><b>You</b>"Alexa, how does example.com show up in AI answers?"</div>
-  <div class="say"><b>Alexa+</b>"example.com gets an F for AI visibility, 17 out of 100. Citability needs the most work. Top fixes: add an llms.txt file, use exactly one H1 that states the page's answer, and break content into H2 sections."</div>
-
-  <h2>Three tools</h2>
+  <h1>A website audit you can act on.</h1>
+  <p class="lead">Suede Signal for Alexa+ turns deterministic website-readiness checks into concise, speakable findings and suggested fixes.</p>
+  <p><a href="/demo.html" style="display:inline-block;background:var(--accent);color:var(--bg);padding:12px 20px;border-radius:6px;text-decoration:none">Try the working demo →</a></p>
+  <p>This is an <strong>Alexa+ simulation with real MCP calls</strong>. It has no native Alexa+ device connection, conversation memory, or automatic website editing. Optional speech uses your browser's voice.</p>
+  <h2>Three read-only tools</h2>
   <table>
-    <tr><th>Ask</th><th>Get</th></tr>
-    <tr><td>"How visible is my site to AI?"</td><td>Grade, score out of 100, weakest area, top three fixes</td></tr>
-    <tr><td>"How do I compare with competitor.com?"</td><td>Who leads, by how much, and the gap to close first</td></tr>
-    <tr><td>"Tell me more about my structured data."</td><td>That area's score, checks passed, and what to fix</td></tr>
+    <tr><th>Action</th><th>Result</th></tr>
+    <tr><td>Check a page</td><td>Grade, score, strongest and weakest areas, up to three spoken fixes</td></tr>
+    <tr><td>Compare two sites</td><td>Two reports and the largest weighted area deficit</td></tr>
+    <tr><td>Explain one area</td><td>Score, checks passed, and recommendations</td></tr>
   </table>
-
+  <p><strong>Score boundary:</strong> readiness checks do not measure actual AI citations, rankings, recommendations, or business outcomes. Only the check and comparison tools return structured output; area explanation returns text.</p>
   <h2>Connect</h2>
-  <p>MCP endpoint, Streamable HTTP, protocol 2025-11-25: <code id="endpoint">/mcp</code></p>
+  <p>For MCP clients: Streamable HTTP, protocol 2025-11-25: <code id="endpoint">/mcp</code></p>
   <p>Powered by <a href="https://signal.suedeai.ai">Suede Signal</a>: up to 23 deterministic checks across AI crawler access, citability, metadata, structured data and trust.</p>
 
-  <footer>Built by <a href="https://seo.suedeai.ai">Suede AI</a> for Build, Ship, Shape. Open source under the MIT license.</footer>
+  <footer>Built by <a href="https://seo.suedeai.ai">Suede AI</a> for Build, Ship, Shape. The MCP adapter is open source under the MIT license. The existing Signal audit service is a separate API dependency.</footer>
 </main>
 <script>document.getElementById("endpoint").textContent = location.origin + "/mcp";</script>
 </body>
